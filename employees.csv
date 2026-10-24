@@ -1,0 +1,13 @@
+employee_id,first_name,last_name,department,job_title,salary,hire_date,city
+1,Asha,Rao,Engineering,Software Engineer,92000,2021-03-15,Bengaluru
+2,Rohan,Mehta,Sales,Account Executive,78000,2020-07-20,Mumbai
+3,Meera,Nair,Engineering,Data Analyst,85000,2022-01-10,Kochi
+4,Vikram,Shah,Finance,Financial Analyst,81000,2019-11-04,Ahmedabad
+5,Neha,Iyer,Human Resources,HR Manager,88000,2018-06-18,Chennai
+6,Arjun,Das,Sales,Sales Representative,64000,2023-02-06,Kolkata
+7,Priya,Menon,Engineering,Software Engineer,97000,2020-09-14,Kochi
+8,Karan,Patel,Finance,Accountant,69000,2022-08-01,Ahmedabad
+9,Ananya,Sen,Marketing,Marketing Specialist,72000,2021-05-24,Kolkata
+10,Dev,Kapoor,Engineering,Engineering Manager,128000,2017-04-03,Delhi
+11,Sana,Khan,Marketing,Marketing Manager,99000,2019-02-11,Mumbai
+12,Manav,Joshi,Human Resources,Recruiter,61000,2023-06-12,Bengaluru

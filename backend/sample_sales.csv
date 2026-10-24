@@ -1,0 +1,13 @@
+order_id,order_date,customer_name,product,category,quantity,unit_price,city
+1001,2026-01-05,Asha Rao,Wireless Mouse,Accessories,2,18.50,Bengaluru
+1002,2026-01-07,Rohan Mehta,Mechanical Keyboard,Accessories,1,72.00,Mumbai
+1003,2026-01-10,Meera Nair,USB-C Hub,Accessories,1,39.99,Kochi
+1004,2026-01-12,Asha Rao,Laptop Stand,Office,1,28.00,Bengaluru
+1005,2026-01-15,Vikram Shah,Monitor 27 inch,Displays,2,229.00,Ahmedabad
+1006,2026-01-18,Neha Iyer,Webcam HD,Accessories,1,54.50,Chennai
+1007,2026-02-02,Rohan Mehta,Monitor 27 inch,Displays,1,229.00,Mumbai
+1008,2026-02-04,Arjun Das,USB-C Hub,Accessories,3,39.99,Kolkata
+1009,2026-02-11,Meera Nair,Mechanical Keyboard,Accessories,1,72.00,Kochi
+1010,2026-02-14,Asha Rao,Webcam HD,Accessories,2,54.50,Bengaluru
+1011,2026-02-20,Vikram Shah,Laptop Stand,Office,2,28.00,Ahmedabad
+1012,2026-03-01,Neha Iyer,Monitor 27 inch,Displays,1,229.00,Chennai

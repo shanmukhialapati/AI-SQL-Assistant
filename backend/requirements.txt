@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pandas
+openpyxl
+xlrd
+sqlalchemy
+psycopg[binary]
+python-dotenv
+sqlparse
+langchain
+pyjwt
+bcrypt
+email-validator
+langchain-google-genai
