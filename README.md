@@ -26,25 +26,10 @@ It is built for people who know their data but not SQL, and for developers who w
 
 ## Demo
 
-<!-- OPTION 1 (recommended): upload the video straight to GitHub.
-     Open this README with the pencil icon on github.com, drag your demo.mp4 (under 100 MB)
-     into the editor, and GitHub inserts a link like
-     https://github.com/user-attachments/assets/xxxxxxxx
-     Keep that link on its own line and it plays inline. Paste it below. -->
 
-<!-- https://github.com/user-attachments/assets/REPLACE_WITH_YOUR_VIDEO_ID -->
+https://github.com/user-attachments/assets/532c6a06-905a-4508-8bbf-5e4995434986
 
-<!-- OPTION 2: YouTube or Loom thumbnail that links to the video. Replace VIDEO_ID.
 
-[![SQL Desk demo](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://youtu.be/VIDEO_ID)
--->
-
-<!-- OPTION 3: short looping GIF stored in the repo.
-
-![SQL Desk demo](docs/demo/preview.gif)
--->
-
-Want to try it yourself? Use the sample files in [`docs/demo`](docs/demo) (`employees.csv`, `departments.csv`) and follow the walkthrough in [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md).
 
 ## Features
 
@@ -70,19 +55,6 @@ Want to try it yourself? Use the sample files in [`docs/demo`](docs/demo) (`empl
 - A private PostgreSQL schema for every user
 - Saved queries, query history and an editor draft that survive refreshes
 
-## Architecture
-
-```mermaid
-flowchart LR
-    A[React + TypeScript UI] -->|REST + JWT| B[FastAPI]
-    B --> C[pandas + openpyxl<br/>file parsing]
-    B --> D[SQL validator]
-    D --> E[(PostgreSQL<br/>per-user schemas)]
-    B --> F[LangChain]
-    F --> G[Google Gemini]
-    B --> E
-```
-
 **Flow:** upload and preview a file, import it into the user's schema, ask a question, validate the generated SQL, run it in a read-only transaction, then show and export the results.
 
 ## Tech stack
@@ -95,31 +67,6 @@ flowchart LR
 | Database | PostgreSQL 16 |
 | AI | LangChain, Google Gemini |
 | Auth | bcrypt, PyJWT |
-
-## Project structure
-
-```
-ai-sql-assistant/
-├── docker-compose.yml          # PostgreSQL for local development
-├── backend/
-│   ├── requirements.txt
-│   ├── .env.example
-│   └── app/
-│       ├── main.py             # App setup, CORS, router registration
-│       ├── config.py           # Environment settings
-│       ├── database.py         # Engine and table initialisation
-│       ├── routers/            # auth, uploads, tables, query, ai, history
-│       └── services/           # file parsing, import, schema, SQL validation,
-│                               # query execution, export, AI, auth
-└── frontend/
-    ├── package.json
-    └── src/
-        ├── App.tsx
-        ├── api.ts              # Typed API client
-        ├── styles.css
-        └── components/         # AuthPage, UploadPanel, SqlWorkspace,
-                                # ResultsView, ChartPanel, TablesSidebar, SavedPanel
-```
 
 ## Getting started
 
@@ -197,24 +144,6 @@ npm run dev
 
 Open http://localhost:5173, create an account and upload a file.
 
-## Configuration
-
-All settings live in `backend/.env`.
-
-| Variable | Description | Default |
-| --- | --- | --- |
-| `DATABASE_URL` | SQLAlchemy URL, e.g. `postgresql+psycopg://user:pass@localhost:5432/ai_sql_assistant` | required |
-| `JWT_SECRET` | Secret used to sign login tokens (16+ characters) | required |
-| `JWT_EXPIRE_MIN` | Token lifetime in minutes | `1440` |
-| `GEMINI_API_KEY` | Google AI Studio API key | empty (AI disabled) |
-| `GEMINI_MODEL` | Gemini model name | `gemini-2.5-flash` |
-| `MAX_UPLOAD_MB` | Maximum upload size | `10` |
-| `MAX_ROWS` | Maximum rows per imported sheet | `100000` |
-| `QUERY_ROW_LIMIT` | Rows returned to the UI per query | `1000` |
-| `QUERY_TIMEOUT_MS` | Per-query timeout | `10000` |
-| `EXPORT_ROW_LIMIT` | Maximum rows in CSV or Excel exports | `100000` |
-| `CORS_ORIGINS` | Comma-separated allowed origins | `http://localhost:5173` |
-
 ## Usage example
 
 1. Sign up and upload `employees.csv`:
@@ -239,61 +168,6 @@ All settings live in `backend/.env`.
 
 4. Run it, switch to the **Chart** tab, and download the result as CSV or Excel.
 
-## API overview
-
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| `POST` | `/api/auth/register`, `/api/auth/login` | Create an account or sign in |
-| `GET` | `/api/auth/me` | Current user |
-| `POST` | `/api/uploads/preview` | Parse a file and preview it (nothing is saved) |
-| `POST` | `/api/uploads/import` | Import a sheet into PostgreSQL |
-| `GET` | `/api/tables` | List your tables |
-| `GET` / `DELETE` | `/api/tables/{name}` | Table schema and sample rows, or delete |
-| `POST` | `/api/query` | Run a read-only query |
-| `POST` | `/api/query/export` | Download results as CSV or XLSX |
-| `POST` | `/api/ai/generate-sql` | Natural language to SQL |
-| `POST` | `/api/ai/explain` | Explain a query |
-| `POST` | `/api/ai/fix-sql` | Repair a failing query |
-| `GET` / `DELETE` | `/api/history` | Query history |
-| `GET` / `POST` / `DELETE` | `/api/saved`, `/api/saved/{id}` | Saved queries |
-| `GET` | `/api/health` | Service and database health |
-
-All endpoints except auth and health require an `Authorization: Bearer <token>` header.
-
-## Security
-
-- **Read-only execution:** only a single `SELECT` or `WITH` statement is accepted. Write and DDL keywords are blocked, and queries run in a read-only transaction that is always rolled back.
-- **Limits:** every query has a timeout and a row limit, and uploads have size and row limits.
-- **User isolation:** each user's tables live in their own schema. Queries run with that schema on the search path, and references to other schemas and app tables are blocked.
-- **Safe imports:** table and column names are sanitised, and data is inserted through parameterised batches rather than executed as SQL.
-- **Authentication:** passwords are hashed with bcrypt and sessions use signed JWTs.
-- **AI privacy:** only table and column names and types are sent to Gemini. Row data is never sent.
-
-**Known limitations**
-- Isolation relies on the search path and a keyword validator. For stricter production isolation, use a dedicated read-only database role limited to each user's schema.
-- The token is stored in `localStorage`. Production deployments should prefer httpOnly cookies.
-- There is no login rate limiting yet.
-
-## Roadmap
-
-- [ ] Monaco editor with SQL syntax highlighting and schema-aware autocomplete
-- [ ] Schema explorer with ER diagram
-- [ ] Data profiling (nulls, duplicates, distributions)
-- [ ] Multi-turn chat with follow-up questions
-- [ ] Docker setup for the full stack
-- [ ] Automated tests and CI
-- [ ] Support for MySQL and SQLite
-
-## Troubleshooting
-
-| Problem | Fix |
-| --- | --- |
-| `DATABASE_URL is missing` or `JWT_SECRET` error on start | Create `backend/.env` from `.env.example` and fill both values |
-| `Cannot reach the backend` in the UI | Make sure Uvicorn is running on port 8000 and `CORS_ORIGINS` includes your frontend URL |
-| `GEMINI_API_KEY is not set` | Add your key to `backend/.env` and restart the backend |
-| Gemini request fails with a model error | Set `GEMINI_MODEL` to a model currently available in Google AI Studio |
-| PowerShell blocks virtualenv activation | Run `.\.venv\Scripts\python.exe` directly, or allow scripts for your user |
-| Old tables are missing after adding login | Tables uploaded before accounts existed are in `public`; upload them again |
 
 ## Contributing
 
